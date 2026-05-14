@@ -1,18 +1,21 @@
 LearnLanka — Requirements Document
 
-## 1. Problem Statement
+## 1\. Problem Statement
 
 
-Many Sri Lankan O/L and A/L students struggle to find qualified and trustworthy tutors who match their subject needs, preferred language, and budget. Existing tuition methods are often time-consuming, lack transparency, and make it difficult for students to compare tutors, schedule sessions, and make secure payments online.
 
-At the same time, tutors face challenges in managing their availability, reaching students efficiently, and receiving organized weekly payments. During exam seasons, these issues become more significant due to the increased demand for tutoring services.
+Many Sri Lankan O/L and A/L students find it difficult to find qualified tutors who match their subject needs, preferred language, and budget. When searching for tuitions it is often difficult for students to compare tutors, schedule sessions, and make secure payments online.
 
-Therefore, there is a need for a fast, secure, and user-friendly online platform that connects students with vetted tutors for one-to-one learning sessions. The system should allow students to search tutors by subject, language, and price, book and pay for sessions online, and provide ratings after classes. Tutors should be able to manage their schedules and receive payments conveniently through the platform.
+At the same time, tutors face challenges in managing their availability, reaching students efficiently, and receiving payments. During exam seasons, these issues become more significant due to the increased demand for tutoring services.
+
+In conclusion , there is a need for a fast, secure, and user-friendly online platform that connects students with vetted tutors for one-to-one learning sessions. The system should allow students to search tutors by subject, language, and price, book and pay for sessions online, and provide ratings after classes. Tutors should be able to manage their schedules and receive payments conveniently through the platform.
 
 
-## 2. Personas
+
+## 2\. Personas
 
 1. O/L Student Persona - “Manula”
+2. 
 
 Goals:
 
@@ -30,6 +33,7 @@ Difficulty in finding classes within the budget
 Difficulty in meeting the language requirement
 
 
+
 2. Math Tutor Persona - “Yasmin”
 
 Goals:
@@ -45,6 +49,7 @@ Communication issues with students
 Delays or issues in payments
 
 
+
 3. Operations Admin Persona - "Yahya"
 
 Goals:
@@ -56,7 +61,8 @@ Difficulty in tracking payments efficiently
 Difficulty in handling issues between students and teachers
 
 
-## 3. Functional Requirements
+
+## 3\. Functional Requirements
 
 Student
 Students shall be able to filter tutors by subject, grade level, language, and price range.
@@ -78,7 +84,9 @@ System
 The platform shall automatically deduct a 15% commission from each completed session before paying out to the tutor.
 
 
-## 4. Non-Functional Requirements
+
+## 4\. Non-Functional Requirements
+
 
 
 | Category     | Metric                                 | Target                                                                        | How we'll measure it                          |
@@ -93,22 +101,23 @@ The platform shall automatically deduct a 15% commission from each completed ses
 
 | Privacy      | Sri Lanka Personal Data Protection Act | Comply with Sri Lanka Personal Data Protection Act 2022                       | Compliance testing                            |
 
-| Security     | Payment data                           | Not stored on LearnLanka servers, use a PCI-DSS compliant gateway             | Audits                                        |
+| Security     | Payment data                           | Not stored on LearnLanka servers, use a PCI-DSS compliant gateway             | Security audits                               |
 
 
 
-## 5. Assumptions
+## 5\. Assumptions
 
 1. Users register with email and password; email verification is required before booking.
 2. The 12-hour cancellation notice window applies to both tutors and students.
-3. Cancelled sessions by tutors are refunded to the student in full.
+3. Cancelled sessions are refunded to the student in full.
 4. Booking requests not accepted/declined by the tutor within 24 hours auto-expire.
 5. The 15% commission is deducted before the tutor payout, not charged separately to the student.
 6. Video sessions are conducted entirely through the third-party provider, LearnLanka does not record or store session content.
 7. If a video session fails due to a third-party outage, the session is rescheduled, not auto-refunded.
-8. The Operations Admin requires a dashboard to monitor bookings, payments, and both party profiles, and a complaint management interface.
+8. The Operations Admin requires a dashboard to monitor bookings, payments, and both party profiles, and a management interface.
 
-## 6. Out of Scope
+## 6\. Out of Scope
+
 
 
 1. Video conferencing infrastructure - video sessions are supported via a third-party provider (Daily.co or 100ms); LearnLanka does not build or host its own video service.
