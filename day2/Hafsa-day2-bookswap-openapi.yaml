@@ -1,0 +1,274 @@
+openapi: 3.1.0
+info:
+  title: BookSwap API
+  version: 0.1.0
+  description: |
+    API for BookSwap, a platform to allow members to list,borrow and search books,aswell as rate members
+
+servers:
+  - url: https://api.bookswap.local
+
+paths:
+  /books:
+    get:
+      summary: List books in the building
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: condition
+          in: query
+          schema:
+            type: string
+            enum: [new, worn]
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Page of books
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookPage"
+        "401": { description: Missing or invalid token }
+        "500": { description: Server error }
+    post:
+      summary: List a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        "201": { description: Book created successfully }
+        "400": { description: Invalid or missing request body }
+        "401": { description: Missing or invalid token }
+        "500": { description: Server error }
+
+  /books/{bookId}/borrow-requests:
+    get:
+      summary: List borrow requests for this book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Page of requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BorrowRequestPage"
+        "401": { description: Missing or invalid token }
+        "500": { description: Server error }
+    post:
+      summary: Create a borrow request for this book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BorrowRequest"
+      responses:
+        "201": { description: Borrow request created successfully }
+        "400": { description: Invalid or missing request body }
+        "401": { description: Missing or invalid token }
+        "500": { description: Server error }
+
+  /borrow-requests/{requestId}:
+    patch:
+      summary: Update borrow-requests as accepted/declined
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [accepted, declined]
+              required:
+                - status
+      responses:
+        "200": { description: Borrow request updated successfully }
+        "400": { description: Invalid or missing request body }
+        "401": { description: Missing or invalid token }
+        "404": { description: Request does not exist }
+        "500": { description: Server error }
+
+  /books/{bookId}/loans:
+    get:
+      summary: List loans for this book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Page of loan history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanPage"
+        "401": { description: Missing or invalid token }
+        "500": { description: Server error }
+
+  /loans/{loanId}:
+    patch:
+      summary: Mark a loan returned
+      parameters:
+        - name: loanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200": { description: Loan marked as returned }
+        "401": { description: Missing or invalid token }
+        "404": { description: Loan not found }
+        "500": { description: Server error }
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        bookId:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        condition:
+          type: string
+          enum: [new, worn]
+        available:
+          type: boolean
+        photoUrl:
+          type: string
+          format: uri
+
+    BorrowRequest:
+      type: object
+      properties:
+        requestId:
+          type: string
+        bookId:
+          type: string
+        requestedBy:
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, declined]
+        requestedAt:
+          type: string
+          format: date-time
+
+    Loan:
+      type: object
+      properties:
+        loanId:
+          type: string
+        bookId:
+          type: string
+        borrowedBy:
+          type: string
+        borrowedAt:
+          type: string
+          format: date-time
+        returnedAt:
+          type:
+            - string
+            - "null"
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        overdue:
+          type: boolean
+
+    Page:
+      type: object
+      properties:
+        data:
+          type: array
+          items: {}
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+
+    BookPage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'
+
+    BorrowRequestPage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/BorrowRequest'
+
+    LoanPage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Loan'
