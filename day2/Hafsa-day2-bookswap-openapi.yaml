@@ -12,6 +12,8 @@ paths:
   /books:
     get:
       summary: List books in the building
+      security:
+        - bearerAuth: []
       parameters:
         - name: search
           in: query
@@ -170,9 +172,18 @@ paths:
         "500": { description: Server error }
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Book:
       type: object
+      required:
+        - title
+        - author
+        - available
       properties:
         bookId:
           type: string
@@ -193,12 +204,13 @@ components:
 
     BorrowRequest:
       type: object
+      required:
+        - bookId
+        - requestedBy
       properties:
         requestId:
           type: string
         bookId:
-          type: string
-        requestedBy:
           type: string
         status:
           type: string
