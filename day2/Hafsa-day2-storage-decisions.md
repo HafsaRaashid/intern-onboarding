@@ -3,11 +3,11 @@
 ## 1. Data inventory
 | Data type | Example record | Volume estimate (1y) | Read/write ratio |
 |-----------|----------------|----------------------|------------------|
-| Book listing | { bookId: "b-001", title: "Harry Potter", author: "J.K. Rowling", isbn: "978-3-16", condition: "new", photoUrl: "https://blob.azure.com/photos/HarryPotter.jpg", available: true }| ~50,000 across all buildings | read-heavy |
-| Book photo | image file stored and referenced by photoUrl in Book Listing | ~50,000 across all buildings - 1 image per book | read-heavy | 
+| Book listing | { bookId: "b-001", title: "Harry Potter", author: "J.K. Rowling", isbn: "978-3-16", condition: "new", photoUrl: "https://blob.azure.com/photos/HarryPotter.jpg", available: true }| ~5000 across all buildings | read-heavy |
+| Book photo | image file stored and referenced by photoUrl in Book Listing | ~5000 across all buildings - 1 image per book | read-heavy | 
 | Book Requests | { requestId: "br-001", bookId: "b-001", requestedBy: "u-042", status: "pending", requestedAt: "2025-01-10T09:00:00Z" } | ~20,000 requests | balanced |
-| Loans | { loanId: "l-001", bookId: "b-001", borrowedBy: "u-042", borrowedAt: "2025-01-11T10:00:00Z", dueDate: "2025-01-25T10:00:00Z", returnedAt: null, overdue: false } | ~30,000 Loans | balanced |
-| User Profiles | { userId: "u-042", name: "Hafsa", email: "hafsa@email.com", building: "Block A" } | ~10,000 Users | read-heavy |
+| Loans | { loanId: "l-001", bookId: "b-001", borrowedBy: "u-042", borrowedAt: "2025-01-11T10:00:00Z", dueDate: "2025-01-25T10:00:00Z", returnedAt: null, overdue: false } | ~3000 Loans | balanced |
+| User Profiles | { userId: "u-042", name: "Hafsa", email: "hafsa@email.com", building: "Block A" } | ~1000 Users | read-heavy |
 
 ## 2. Storage selection
 | Data type | Chosen store | Why this store | Why not the alternatives |
