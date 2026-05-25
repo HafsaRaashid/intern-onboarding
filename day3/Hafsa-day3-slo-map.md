@@ -13,10 +13,10 @@
 | # | SLI definition | Measurement source | SLO target | Window | Error budget |
 |---|----------------|---------------------|------------|--------|--------------|
 | 1 | Of all GET /books requests in the last 28 days, the percentage that returned 2xx in under 800ms | App Insights requests table | 99% | 28 days | 1% |
-| 2 | Of all POST /books requests in the last 28 days, the percentage that did NOT return 5xx | App Insights requests table | 99% | 28 days | 0.1% | 
-| 3 | Of all POST /books/{bookId}/upload requests where the file exceeded 5MB or was not JPEG/PNG, the percentage that returned 4xx | App Insights requests table | 100% | 28 days | 0% |
+| 2 | Of all POST /books requests in the last 28 days, the percentage that did NOT return 5xx | App Insights requests table | 99.9% | 28 days | 0.1% | 
+| 3 | Of all POST /books/{bookId}/photos requests where the file exceeded 5MB or was not JPEG/PNG, the percentage that returned 4xx | Integration test suite | 100% | 28 days | 0% |
 | 4 | Of all POST /books requests that returned 2xx in the last 28 days, the percentage where a notification was enqueued within 2 seconds of the request completion timestamp | Custom metric in App Insights (consumer logs delta between request time and EnqueuedTimeUtc) | 95% | 28 days | 5% | 
-| 5 | Of all API responses in the last 28 days, the percentage that contain no address or phone fields in the response body | Integration/contract test suite — tests run on every deployment against all endpoints | 100% | Per deployment | 0% | 
+| 5 | Of all API responses in the last 28 days, the percentage that contain no address or phone fields in the response body | Contract test suite — tests run on every deployment against all endpoints | 100% | Per deployment | 0% | 
 
 ## 3. Error budget policy
 - What the team stops doing when the budget is exhausted
@@ -27,4 +27,4 @@ The on-call engineer owns the initial response. Escalation to the team lead if t
 
 ## 4. Out of budget right now
 - One sentence: which SLO would you bet you cannot meet today and why
-SLI 1 (search latency) — the system is currently designed for a single building; scaling to 200 buildings with a potential 10× traffic spike on Sunday has not been validated.
+SLI 1 (search latency) - the system is currently designed for a single building; scaling to 200 buildings with a potential 10x traffic spike on Sunday has not been validated.

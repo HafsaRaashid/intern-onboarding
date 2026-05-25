@@ -1,0 +1,12 @@
+Category,Endpoint,Finding,Severity,Mitigation Owner
+Authn,All endpoints,No global security block - new endpoints will be unprotected by default,M,Backend Developer
+Authz,PATCH /borrow-requests/{requestId},Any member can accept or decline requests on a book they do not own,H,Backend Developer
+Authz,GET /books/{bookId}/borrow-requests,Any member can view borrow requests for a book they do not own,H,Backend Developer
+Authz,POST /books/{bookId}/photos,Any member can upload a photo to a book they do not own,H,Backend Developer
+Authz,PATCH /loans/{loanId},Any member can mark a loan as returned on a book they did not borrow,H,Backend Developer
+Injection,GET /books,Free-text search parameter vulnerable to SQL injection if concatenated,H,Backend Developer
+Secrets,N/A,Connection strings risk being stored in .env committed to Git,H,DevOps
+Transport,N/A,Plain HTTP requests can bypass Front Door WAF and rate limiting,M,DevOps
+Rate Limit,POST /books,No rate limit catalogue can be flooded with fake listings,M,DevOps
+Rate Limit,POST /books/{bookId}/borrow-requests,No rate limit owners can be spammed with borrow requests,M,DevOps
+PII,N/A,Loan activity tied to memberId constitutes behavioural PII workspace not access controlled,M,DevOps
