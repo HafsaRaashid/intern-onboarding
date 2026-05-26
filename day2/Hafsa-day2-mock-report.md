@@ -1,7 +1,7 @@
 # BookSwap — Mock Smoke Test Report
 
 ## Setup
-- Prism command used (`npx @stoplight/prism mock bookswap-openapi.yaml`)
+- Prism command used (`npx @stoplight/prism-cli mock Hafsa-day2-bookswap-openapi.yaml`)
 - Postman / Bruno collection link: https://hafsamohammedraashid-9864631.postman.co/workspace/Hafsa-Mohammed-Raashid's-Worksp~10ff78f6-a8b6-4b5d-88d3-51ea72eff888/collection/52995759-ef9ceb96-a3a8-4776-a768-ac5c82cfd5fa?action=share&source=copy-link&creator=52995759
 
 ## Results Summary

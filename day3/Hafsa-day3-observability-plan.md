@@ -12,6 +12,18 @@
 | Alerts with a clear runbook link | 100% | 100% |
 | Dashboards for ops | 1 health, 1 business | 2 |
 
+## Required Tests/Validations:
+| # | Signal type | Source | What it answers | Sample query / metric name |
+|---|-------------|--------|-----------------|---------------------------|
+| 1 | Metric | Application Insights | Search latency p95 | `requests \| where name == "GET /books" \| summarize percentile(duration, 95) by bin(timestamp, 1m)` |
+| 2 | Metric | Application Insights | Listing creation success rate | `requests \| where name == "POST /books" \| summarize success = countif(success == true), total = count() by bin(timestamp, 1m) \| extend rate = (success * 100.0) / total` |
+| 3 | Log | App Insights traces | Authn failures with member ID | `traces \| where customDimensions.event == "auth.failed" \| project timestamp, customDimensions.memberId, customDimensions.reason` |
+| 4 | Trace | Application Insights | Slow request breakdown across DB and Redis | `dependencies \| where duration > 500 \| summarize avg(duration) by type, target, bin(timestamp, 5m)` |
+| 5 | Metric | Service Bus | Email digest queue depth | `AzureMetrics \| where ResourceType == "MICROSOFT.SERVICEBUS/NAMESPACES" \| where MetricName == "ActiveMessages" \| summarize avg(Average) by bin(TimeGenerated, 1m)` |
+| 6 | Log | Application Insights | Book listing creation errors | `traces \| where severityLevel == 3 \| where customDimensions.event == "book.create.failed" \| project timestamp, customDimensions.memberId, message` |
+| 7 | Trace | Application Insights | Borrow request flow across API and DB | `dependencies \| where operation_Name == "POST /books/{bookId}/borrow-requests" \| summarize avg(duration) by type, target, bin(timestamp, 5m)` |
+
+
 ## Alert proposal
 | Alert | Condition | Severity | Notification | Runbook |
 |-------|-----------|----------|--------------|---------|

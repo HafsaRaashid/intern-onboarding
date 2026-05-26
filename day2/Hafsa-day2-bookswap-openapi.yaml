@@ -8,6 +8,7 @@ info:
 servers:
   - url: https://api.bookswap.local
 
+
 paths:
   /books:
     get:
@@ -43,6 +44,8 @@ paths:
         "500": { description: Server error }
     post:
       summary: List a new book
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -55,9 +58,40 @@ paths:
         "401": { description: Missing or invalid token }
         "500": { description: Server error }
 
+  /books/{bookId}/photos:
+    post:
+      summary: Upload a photo for a listed book
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/BookPhotoUpload"
+      responses:
+        "200":
+          description: Photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookPhotoResponse"
+        "400": { description: Invalid file type or file exceeds 5 MB }
+        "403": { description: Caller does not own this book }
+        "401": { description: Missing or invalid token }
+        "500": { description: Server error }
+
   /books/{bookId}/borrow-requests:
     get:
       summary: List borrow requests for this book
+      security:
+        - bearerAuth: []
       parameters:
         - name: bookId
           in: path
@@ -80,9 +114,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/BorrowRequestPage"
         "401": { description: Missing or invalid token }
+        "403": { description: Caller does not own this resource }
         "500": { description: Server error }
     post:
       summary: Create a borrow request for this book
+      security:
+        - bearerAuth: []
       parameters:
         - name: bookId
           in: path
@@ -104,6 +141,8 @@ paths:
   /borrow-requests/{requestId}:
     patch:
       summary: Update borrow-requests as accepted/declined
+      security:
+        - bearerAuth: []
       parameters:
         - name: requestId
           in: path
@@ -126,12 +165,15 @@ paths:
         "200": { description: Borrow request updated successfully }
         "400": { description: Invalid or missing request body }
         "401": { description: Missing or invalid token }
+        "403": { description: Caller does not own this resource }
         "404": { description: Request does not exist }
         "500": { description: Server error }
 
   /books/{bookId}/loans:
     get:
       summary: List loans for this book
+      security:
+        - bearerAuth: []
       parameters:
         - name: bookId
           in: path
@@ -158,6 +200,8 @@ paths:
 
   /loans/{loanId}:
     patch:
+      security:
+        - bearerAuth: []
       summary: Mark a loan returned
       parameters:
         - name: loanId
@@ -168,6 +212,7 @@ paths:
       responses:
         "200": { description: Loan marked as returned }
         "401": { description: Missing or invalid token }
+        "403": { description: Caller does not own this book }
         "404": { description: Loan not found }
         "500": { description: Server error }
 
@@ -201,6 +246,24 @@ components:
         photoUrl:
           type: string
           format: uri
+          readOnly: true
+
+    BookPhotoUpload:
+      type: object
+      required:
+        - photo
+      properties:
+        photo:
+          type: string
+          format: binary
+
+    BookPhotoResponse:
+      type: object
+      properties:
+        photoUrl:
+          type: string
+          format: uri
+          readOnly: true
 
     BorrowRequest:
       type: object
