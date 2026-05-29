@@ -26,7 +26,7 @@ Azure Cache for Redis is down
 Pages that rely on cached session data or cached query results become slow response times spike from ~50 ms to 2-5 s.
 ### Detection
 Azure tracks a metric called connectedclients - the number of things currently connected to Redis.Normally this is a healthy non-zero number.
-Alert rule: connectedclients < 1 for 2 consecutive minutes / app logs say "pool timeout"
+Alert rule: connectedclients < 1 for 2 consecutive minutes / app logs say "pool timeout" (too many requests competing for too few connections)
 ### Mitigation in design
 the application continues to operate with degraded performance by falling back to the primary data store when Redis is temporarily unavailable.
 Cache-aside: on a Redis TIMEOUT or CONNECTION exception, fall through to Azure SQL - never hard-fail to the user
