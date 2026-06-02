@@ -42,3 +42,6 @@ The two attributes that drove this decision are **cost** and **operability**:
 
 ## Design review feedback (received from another pair)
 
+
+<!-- The reviewing pair identified that the B1 App Service tier chosen in ADR-0002 does not support staging. For a financial claims system with a 99.9% business-hours SLA, deploying directly to production without a staging environment is a risk , live users are affected immediately if something breaks. They recommended upgrading to the S1 Standard tier (~$74/month), which includes 5 deployment slots, allowing the team to test changes in staging before swapping to production. 
+However, the option of deploying outside business hours exists. The SLA only covers 08:00–19:00 Mon–Fri. If the team always deploys at 7pm Friday, they have the weekend to catch issues before anyone uses the system Monday morning. -->

@@ -2,26 +2,29 @@
 
 ## 1. Why
 - The user / business outcome we are solving
-reduce miscategorised expense claims and speed up the submission process, saving Finance time and giving BISTEC more accurate expense data.
-The system reads the receipt and suggests the right category automatically. Staff just confirm with one tap instead of thinking about it. This means:
+
+Reduce miscategorised expense claims and speed up the submission process, saving Finance time and giving BISTEC more accurate expense data.
+
 Fewer miscategorised claims - Finance spends less time correcting errors
 Faster submission - staff tap "accept" instead of browsing a dropdown
 Better data - expense reports are more accurate because categories are consistent
-Logged suggestions - over time, the data shows where the model gets it wrong, so it can be improved
 
 - The metric this feature is expected to move
-Suggestion acceptance rate — how often staff accept the AI suggestion vs override it (tracked via FR5 logging in Application Insights categoriser.suggested events). No target is set for v1; the first release establishes a baseline.
+
+Suggestion acceptance rate — how often staff accept the AI suggestion vs override it (tracked via FR5 logging in Application Insights categoriser.suggested events). 
 
 ## 2. Scope
 - In scope (1-3 bullets)
+
 Receipt image OCR via Azure AI Document Intelligence, category suggestion via Azure OpenAI, with confidence score (0.0–1.0) and "Needs review" flag below 0.6
-Fallback chain: LLM unavailable: rule-based keyword matching, OCR fails : default to "Other" with error message
-Logging every suggestion (accepted or overridden) to Application Insights categoriser.suggested for future model evaluation
+Fallback chain: LLM unavailable-> rule-based keyword matching, OCR fails-> default to "Other" with error message
+Logging every suggestion (accepted or overridden) to Application Insights customEvents (categoriser.suggested) for future model evaluation
 
 - Affects which containers / services from Day 4
+
 | Container / Service | What changes |
 |---|---|
-| Client application | New UI showing suggested category, confidence badge score, and accept/change controls |
+| Web application | New UI showing suggested category, confidence score, and accept/change controls |
 | API service: new Categoriser component | Calls Document Intelligence for OCR, calls Azure OpenAI for suggestion, handles fallback logic, returns result |
 | API service — Receipts component | After upload completes, triggers the Categoriser component |
 | API service — Audit component | Categoriser returns the suggestion, then Audit logs it to Application Insights.  |
@@ -59,10 +62,10 @@ Logging every suggestion (accepted or overridden) to Application Insights catego
 ### Errors
 | Code | Condition | Response body |
 |---|---|---|
-| 400 | Missing claim_id or invalid image format (not jpeg/png) | `{ "error": "Invalid input", "detail": "..." }` |
+| 400 | Missing claim_id or invalid image format (not jpeg/png) | `{ "error": "Invalid input" }` |
 | 404 | claim_id does not exist | `{ "error": "Claim not found" }` |
 | 413 | Image exceeds 10 MB | `{ "error": "File too large", "max_bytes": 10485760 }` |
-| 502 | Both OCR and LLM failed ( fallback returns "Other" as the suggestion) | `{ "error": "Categorisation unavailable" }` |
+
 
 ### Side effects
 - Application Insights customEvent emitted called `categoriser.suggested`, Event properties: claim_id, category, confidence, source, needs_review, outcome (accepted/overridden), override_category (if changed), latency_ms, timestamp
@@ -152,10 +155,10 @@ Staff sees: **Lodging** (70% confident) — [Accept] [Change]
 
 ---
 ## 6. Out of scope
-- **Multi-receipt batch categorisation** —v1 categorises one receipt at a time because the claimant must review and accept or change each suggestion individually before submitting (FR3). Batch categorisation would require a different UI flow for reviewing multiple suggestions at once, which adds design complexity beyond v1.
+- **Multi-receipt batch categorisation** —v1 categorises one receipt at a time because the claimant must review and accept or change each suggestion individually before submitting. Batch categorisation would require a different UI flow for reviewing multiple suggestions at once, which adds design complexity beyond v1.
 - **Auto-submission without claimant confirmation** — the spec requires the claimant to accept or change before submitting (FR3). Removing human review is a future consideration after acceptance rate data proves the model is reliable.
 - **Training or fine-tuning a custom model** — v1 uses prompt-based classification with gpt-4.1. Fine-tuning requires labelled training data which the FR5 logging will collect over time, but is not in scope for this release.
-- **Multi-language receipt support** — v1 assumes explicit multi-language support (Tamil,Sinhala other languages) is deferred.
+- **Multi-language receipt support** — v1 assumes multi-language support (Tamil,Sinhala other languages) is deferred.
 
 ## 7. Open questions
 - What confidence threshold should trigger "Needs review"?
